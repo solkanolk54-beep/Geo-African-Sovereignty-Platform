@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # 1. قاعدة البيانات المكانية السيادية PostGIS
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: atlas_cloud_postgis
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secure_sovereign_password
+      POSTGRES_DB: geo_sovereignty_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - sovereignty_net
+    restart: always
+
+  # 2. خدمة التخزين المؤقت والرسائل الفورية Redis
+  redis:
+    image: redis:7-alpine
+    container_name: atlas_cloud_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - sovereignty_net
+    restart: always
+
+  # 3. الخادم الخلفي الرئيسي (Node.js API)
+  backend:
+    build: .
+    container_name: geo_african_backend
+    environment:
+      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:secure_sovereign_password@db:5432/geo_sovereignty_db
+      - REDIS_URL=redis://redis:6379
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - sovereignty_net
+    restart: always
+
+  # 4. خادم الذكاء الاصطناعي ومعالجة صور الأقمار الصناعية (Python FastAPI)
+  ai_engine:
+    image: python:3.10-slim
+    container_name: solvision_ai_engine
+    working_dir: /app
+    volumes:
+      - ./ai_service:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    networks:
+      - sovereignty_net
+    restart: always
+
+volumes:
+  pgdata:
+
+networks:
+  sovereignty_net:
+    driver: bridge

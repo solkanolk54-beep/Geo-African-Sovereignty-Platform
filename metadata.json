@@ -1,0 +1,8 @@
+{
+  "name": "المنصة الإفريقية للسيادة الغذائية والرقمية | Geo-African Sovereignty Platform",
+  "description": "منظومة جيومكانية وإقليمية متقدمة تربط بيانات الاستشعار الفضائي وسلاسل الإمداد العابرة للصحراء بالذكاء الاصطناعي والتكامل مع سحابة AtlasCloud وNeoCloud وSol-Ecosystem ومنظومة ميلة وفلاح تيك.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

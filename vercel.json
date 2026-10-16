@@ -1,23 +1,35 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/vite"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "vite",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "ai_service",
+          "format": "url",
+          "env": "AI_SERVICE_URL"
+        }
+      ]
     },
-    {
-      "src": "ai_service/main.py",
-      "use": "@vercel/python"
+    "ai_service": {
+      "root": "ai_service",
+      "framework": "fastapi"
     }
-  ],
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/ai_service/main.py"
+      "destination": {
+        "service": "ai_service"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": {
+        "service": "app"
+      }
     }
   ]
 }
